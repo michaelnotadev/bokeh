@@ -39,8 +39,8 @@ from typing import (
 # Bokeh imports
 from .core.enums import Location, LocationType, SizingModeType
 from .models import (
-    Box,
     Column,
+    FlexBox,
     GridBox,
     GridPlot,
     LayoutDOM,
@@ -461,7 +461,7 @@ def grid(children: Any = [], sizing_mode: SizingModeType | None = None, nrows: i
             return _has_auto_sizing(child) and child.spacing == 0
 
         def traverse(item: LayoutDOM, top_level: bool = False):
-            if isinstance(item, Box) and (top_level or is_usable(item)):
+            if isinstance(item, FlexBox) and (top_level or is_usable(item)):
                 container = col if isinstance(item, Column) else row
                 return container(list(map(traverse, item.children)))
             else:

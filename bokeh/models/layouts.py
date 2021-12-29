@@ -63,8 +63,8 @@ from ..model import Model
 #-----------------------------------------------------------------------------
 
 __all__ = (
-    'Box',
     'Column',
+    'FlexBox',
     'GridBox',
     'HTMLBox',
     'LayoutDOM',
@@ -403,7 +403,7 @@ class GridBox(LayoutDOM):
             return str(self)
 
 @abstract
-class Box(LayoutDOM):
+class FlexBox(LayoutDOM):
     ''' Abstract base class for Row and Column. Do not use directly.
 
     '''
@@ -448,7 +448,7 @@ class Box(LayoutDOM):
     """)
 
 
-class Row(Box):
+class Row(FlexBox):
     ''' Lay out child components in a single horizontal row.
 
     Children can be specified as positional arguments, as a single argument
@@ -464,7 +464,7 @@ class Row(Box):
             return None
         return max(x._sphinx_height_hint() for x in self.children)
 
-class Column(Box):
+class Column(FlexBox):
     ''' Lay out child components in a single vertical row.
 
     Children can be specified as positional arguments, as a single argument
