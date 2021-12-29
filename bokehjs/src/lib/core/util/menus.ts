@@ -105,39 +105,43 @@ export class ContextMenu {
   }
 
   protected _position(at: At): void {
-    const parent_el = (() => {
-      if (this.el.parentNode instanceof ShadowRoot)
-        return this.el.parentNode.host
-      else
-        return this.el.parentElement
+    const pos = (() => {
+      if ("left_of" in at) {
+        const {left, top} = at.left_of.getBoundingClientRect()
+        return {right: left, top}
+      }
+      if ("right_of" in at) {
+        const {top, right} = at.right_of.getBoundingClientRect()
+        return {left: right, top}
+      }
+      if ("below" in at) {
+        const {left, bottom} = at.below.getBoundingClientRect()
+        return {left, top: bottom}
+      }
+      if ("above" in at) {
+        const {left, top} = at.above.getBoundingClientRect()
+        return {left, bottom: top}
+      }
+      return at
     })()
-    if (parent_el != null) {
-      const pos = (() => {
-        if ("left_of" in at) {
-          const {left, top} = at.left_of.getBoundingClientRect()
-          return {right: left, top}
-        }
-        if ("right_of" in at) {
-          const {top, right} = at.right_of.getBoundingClientRect()
-          return {left: right, top}
-        }
-        if ("below" in at) {
-          const {left, bottom} = at.below.getBoundingClientRect()
-          return {left, top: bottom}
-        }
-        if ("above" in at) {
-          const {left, top} = at.above.getBoundingClientRect()
-          return {left, bottom: top}
-        }
-        return at
-      })()
 
-      const parent = parent_el.getBoundingClientRect()
-      this.el.style.left = pos.left != null ? `${pos.left - parent.left}px` : ""
-      this.el.style.top = pos.top != null ? `${pos.top - parent.top}px` : ""
-      this.el.style.right = pos.right != null ? `${parent.right - pos.right}px` : ""
-      this.el.style.bottom = pos.bottom != null ? `${parent.bottom - pos.bottom}px` : ""
-    }
+    const parent_el = this.el.offsetParent ?? document.body
+    const origin = (() => {
+      const rect = parent_el.getBoundingClientRect()
+      const style = getComputedStyle(parent_el)
+      return {
+        left: rect.left - parseFloat(style.marginLeft),
+        right: rect.right + parseFloat(style.marginRight),
+        top: rect.top - parseFloat(style.marginTop),
+        bottom: rect.bottom + parseFloat(style.marginBottom),
+      }
+    })()
+
+    const {style} = this.el
+    style.left = pos.left != null ? `${pos.left - origin.left}px` : "auto"
+    style.top = pos.top != null ? `${pos.top - origin.top}px` : "auto"
+    style.right = pos.right != null ? `${origin.right - pos.right}px` : "auto"
+    style.bottom = pos.bottom != null ? `${origin.bottom - pos.bottom}px` : "auto"
   }
 
   styles(): string[] {
@@ -188,8 +192,8 @@ export class ContextMenu {
       this.render()
       if (this.shadow_el.children.length == 0)
         return
-      this._position(at ?? {left: 0, top: 0})
       display(this.el)
+      this._position(at ?? {left: 0, top: 0})
       this._listen()
       this._open = true
     }
