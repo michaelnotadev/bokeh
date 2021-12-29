@@ -1,10 +1,6 @@
 import {div, replaceWith} from "../core/dom"
 import {RenderItem} from "./json"
 
-// Matches Bokeh CSS class selector. Setting all Bokeh parent element class names
-// with this var prevents user configurations where css styling is unset.
-export const BOKEH_ROOT = "bk-root"
-
 function _get_element(elementid: string): HTMLElement {
   let element = document.getElementById(elementid)
 
@@ -15,7 +11,7 @@ function _get_element(elementid: string): HTMLElement {
 
   // If autoload script, replace script tag with div for embedding.
   if (element.tagName == "SCRIPT") {
-    const root_el = div({class: BOKEH_ROOT})
+    const root_el = div()
     replaceWith(element, root_el)
     element = root_el
   }
