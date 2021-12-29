@@ -1,6 +1,6 @@
 import {Annotation, AnnotationView} from "./annotation"
 import {TooltipAttachment} from "core/enums"
-import {div, style, display, undisplay, empty, remove, classes} from "core/dom"
+import {div, style, display, undisplay, empty, remove} from "core/dom"
 import * as p from "core/properties"
 
 import tooltips_css, * as tooltips from "styles/tooltips.css"
@@ -56,7 +56,7 @@ export class TooltipView extends AnnotationView {
     const {content} = this.model
 
     this.empty()
-    classes(this.el).toggle("bk-tooltip-custom", this.model.custom)
+    this.el.classList.toggle("bk-tooltip-custom", this.model.custom)
     this.shadow_el.appendChild(content)
 
     if (this.model.show_arrow)
