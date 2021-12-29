@@ -93,7 +93,8 @@ export abstract class ToolButtonView extends DOMView {
     this.el.tabIndex = 0
 
     if (this._menu != null) {
-      this.root.children_el.appendChild(this._menu.el)
+      const target_el = this.root instanceof DOMView ? this.root.children_el : document.body
+      target_el.appendChild(this._menu.el)
     }
   }
 
