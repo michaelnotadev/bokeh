@@ -1,6 +1,6 @@
 import {Document} from "../document"
 import {DocumentChangedEvent, RootAddedEvent, RootRemovedEvent, TitleChangedEvent} from "../document"
-import {Model} from "../model"
+import {HasProps} from "../core/has_props"
 import {View} from "../core/view"
 import {DOMView} from "../core/dom_view"
 import {build_view} from "../core/build_views"
@@ -12,9 +12,9 @@ export async function add_document_standalone(document: Document, element: HTMLE
     roots: (HTMLElement | null)[] = [], use_for_title: boolean = false): Promise<View[]> {
   // this is a LOCAL index of views used only by this particular rendering
   // call, so we can remove the views we create.
-  const views: Map<Model, View> = new Map()
+  const views: Map<HasProps, View> = new Map()
 
-  async function render_model(model: Model): Promise<View> {
+  async function render_model(model: HasProps): Promise<View> {
     const view = await build_view(model, {parent: null})
 
     if (view instanceof DOMView) {
@@ -29,7 +29,7 @@ export async function add_document_standalone(document: Document, element: HTMLE
     return view
   }
 
-  function unrender_model(model: Model): void {
+  function unrender_model(model: HasProps): void {
     const view = views.get(model)
     if (view != null) {
       view.remove()
