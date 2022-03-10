@@ -1,4 +1,4 @@
-import {HTMLBox, HTMLBoxView} from "../layouts/html_box"
+import {LayoutDOM, LayoutDOMView} from "../layouts/layout_dom"
 import * as p from "core/properties"
 import {HasProps} from "core/has_props"
 import {div, span, input, empty, Keys} from "core/dom"
@@ -139,11 +139,11 @@ export class HTMLPrinter {
   }
 }
 
-export class InspectorView extends HTMLBoxView {
+export class InspectorView extends LayoutDOMView {
   override model: Inspector
 
-  override initialize(): void {
-    super.initialize()
+  get child_models(): LayoutDOM[] {
+    return []
   }
 
   override styles(): string[] {
@@ -429,13 +429,13 @@ export class InspectorView extends HTMLBoxView {
 export namespace Inspector {
   export type Attrs = p.AttrsOf<Props>
 
-  export type Props = HTMLBox.Props & {
+  export type Props = LayoutDOM.Props & {
   }
 }
 
 export interface Inspector extends Inspector.Attrs {}
 
-export class Inspector extends HTMLBox {
+export class Inspector extends LayoutDOM {
   override properties: Inspector.Props
   override __view_type__: InspectorView
 
