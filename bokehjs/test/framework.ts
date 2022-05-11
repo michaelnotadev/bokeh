@@ -250,7 +250,7 @@ async function _run_test(suites: Suite[], test: Test): Promise<PartialResult> {
 
   if (error == null && test.view != null) {
     try {
-      const {width, height} = test.view.layout.bbox
+      const {width, height} = test.view.bbox
       const rect = test.el!.getBoundingClientRect()
       if (width > rect.width || height > rect.height)
         throw new Error(`viewport size exceeded [${width}, ${height}] > [${rect.width}, ${rect.height}]`)

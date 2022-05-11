@@ -4,7 +4,6 @@ import * as p from "core/properties"
 
 export abstract class AbstractIconView extends DOMComponentView {
   override model: AbstractIcon
-  override el: HTMLElement
 }
 
 export namespace AbstractIcon {

@@ -1,6 +1,6 @@
 import Hammer, {Manager} from "hammerjs"
 
-import {DOMView} from "core/dom_view"
+import {DOMElementView} from "core/dom_view"
 import {empty, Keys} from "core/dom"
 import {ToolIcon} from "core/enums"
 import {ContextMenu} from "core/util/menus"
@@ -13,10 +13,9 @@ import icons_css from "styles/icons.css"
 import type {ToolbarView} from "./toolbar"
 import type {Tool} from "./tool"
 
-export abstract class ToolButtonView extends DOMView {
+export abstract class ToolButtonView extends DOMElementView {
   override model: Tool
   override readonly parent: ToolbarView
-  override el: HTMLElement
 
   private _hammer: InstanceType<typeof Manager>
   private _menu?: ContextMenu
@@ -93,7 +92,7 @@ export abstract class ToolButtonView extends DOMView {
     this.el.tabIndex = 0
 
     if (this._menu != null) {
-      const target_el = this.root instanceof DOMView ? this.root.children_el : document.body
+      const target_el = this.root instanceof DOMElementView ? this.root.children_el : document.body
       target_el.appendChild(this._menu.el)
     }
   }

@@ -9,6 +9,8 @@ export interface DOMView extends View {
 }
 
 export abstract class DOMView extends View {
+  override parent: DOMView | null
+
   static tag_name: keyof HTMLElementTagNameMap = "div"
 
   el: Node
@@ -50,8 +52,12 @@ export abstract class DOMView extends View {
   }
 }
 
-export abstract class DOMComponentView extends DOMView {
+export abstract class DOMElementView extends DOMView {
   override el: HTMLElement
+}
+
+export abstract class DOMComponentView extends DOMElementView {
+  override parent: DOMElementView | null
 
   override shadow_el: ShadowRoot
   stylesheet_els: HTMLStyleElement[] = []

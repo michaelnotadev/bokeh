@@ -1,24 +1,33 @@
 import {LayoutDOM, LayoutDOMView} from "../layouts/layout_dom"
 import {ToolbarBox, ToolbarBoxView} from "../tools/toolbar_box"
+import {GridBox, GridBoxView} from "../layouts/grid_box"
 import {Toolbar} from "../tools/toolbar"
-import {Grid, RowsSizing, ColsSizing, Row, Column} from "core/layout/grid"
+import {RowsSizing, ColsSizing} from "core/layout/grid"
 import {Location} from "core/enums"
-import {div, position} from "core/dom"
 import * as p from "core/properties"
 
 export class GridPlotView extends LayoutDOMView {
   override model: GridPlot
 
   protected _toolbar: ToolbarBox
+  protected _grid: GridBox
 
   protected get _toolbar_view(): ToolbarBoxView {
-    return this.child_views.find((v) => v.model == this._toolbar) as ToolbarBoxView
+    return this.child_views[0] as ToolbarBoxView
+  }
+
+  protected get _grid_view(): GridBoxView {
+    return this.child_views[1] as GridBoxView
   }
 
   override initialize(): void {
     super.initialize()
+
     const {toolbar, toolbar_location} = this.model
     this._toolbar = new ToolbarBox({toolbar, toolbar_location: toolbar_location ?? "above"})
+
+    const {children, rows, cols, spacing} = this.model
+    this._grid = new GridBox({children, rows, cols, spacing})
   }
 
   override connect_signals(): void {
@@ -34,57 +43,26 @@ export class GridPlotView extends LayoutDOMView {
   }
 
   get child_models(): LayoutDOM[] {
-    return [this._toolbar, ...this.model.children.map(([child]) => child)]
-  }
-
-  protected grid: Grid
-  protected grid_el: HTMLElement
-
-  override render(): void {
-    super.render()
-
-    this.grid_el = div({style: {position: "absolute"}})
-    this.shadow_el.appendChild(this.grid_el)
-
-    for (const child_view of this.child_views) {
-      if (child_view instanceof ToolbarBoxView)
-        continue
-      this.grid_el.appendChild(child_view.el)
-    }
-  }
-
-  override update_position(): void {
-    super.update_position()
-    position(this.grid_el, this.grid.bbox)
+    return [this._toolbar, this._grid]
   }
 
   override _update_layout(): void {
-    const grid = this.grid = new Grid()
-    grid.rows = this.model.rows
-    grid.cols = this.model.cols
-    grid.spacing = this.model.spacing
+    super._update_layout()
 
-    for (const [child, row, col, row_span, col_span] of this.model.children) {
-      const child_view = this._child_views.get(child)!
-      grid.items.push({layout: child_view.layout, row, col, row_span, col_span})
-    }
-    grid.set_sizing(this.box_sizing())
+    const {style} = this.el
+    style.display = "flex"
 
     const {toolbar_location} = this.model
-    if (toolbar_location == null)
-      this.layout = grid
-    else {
-      this.layout = (() => {
-        const tb = this._toolbar_view.layout
-        switch (toolbar_location) {
-          case "above": return new Column([tb, grid])
-          case "below": return new Column([grid, tb])
-          case "left":  return new Row([tb, grid])
-          case "right": return new Row([grid, tb])
-        }
-      })()
-      this.layout.set_sizing(this.box_sizing())
-    }
+    const direction = (() => {
+      switch (toolbar_location) {
+        case "above": return "column"
+        case "below": return "column-reverse"
+        case "left":  return "row"
+        case "right": return "row-reverse"
+        case null:    return "row"
+      }
+    })()
+    style.flexDirection = direction
   }
 }
 

@@ -85,7 +85,7 @@ export class HoverToolView extends InspectToolView {
 
     const {tooltips} = this.model
     if (tooltips instanceof Template) {
-      this._template_view = await build_view(tooltips, {parent: this})
+      this._template_view = await build_view(tooltips, {parent: this.plot_view.canvas})
       this._template_view.render()
     }
   }
@@ -127,8 +127,8 @@ export class HoverToolView extends InspectToolView {
       }
     }
 
-    const views = await build_views(this._ttviews, [..._ttmodels.values()], {parent: this.plot_view})
-    for (const ttview of views) {
+    const {created} = await build_views(this._ttviews, [..._ttmodels.values()], {parent: this.plot_view})
+    for (const ttview of created) {
       ttview.render()
     }
 
