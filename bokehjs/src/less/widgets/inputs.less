@@ -142,3 +142,21 @@ select[multiple], select[size], textarea {
     }
   }
 }
+
+.bk-description {
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  //visibility: hidden;
+  background-image: var(--bokeh-icon-help);
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-left: 0.25em;
+  vertical-align: middle;
+  margin-top: -2px; // arbitrary, looks better
+}
+
+label:hover > .bk-description {
+  visibility: visible;
+}

@@ -20,7 +20,7 @@ from bokeh.models import (AutocompleteInput, Button, CheckboxButtonGroup,
                           NumberFormatter, Panel, Paragraph, PreText, RadioButtonGroup,
                           RadioGroup, RangeSlider, Row, Select, SelectEditor, Slider,
                           Spinner, StringEditor, StringFormatter, Switch, TableColumn,
-                          Tabs, TextAreaInput, TextInput, Toggle)
+                          Tabs, TextAreaInput, TextInput, Toggle, Tooltip)
 from bokeh.plotting import figure
 from bokeh.resources import INLINE
 from bokeh.sampledata.autompg2 import autompg2 as mpg
@@ -70,7 +70,12 @@ date_range_slider = DateRangeSlider(value=(date(2016, 1, 1), date(2016, 12, 31))
 
 spinner = Spinner(value=100)
 
-color_picker = ColorPicker(color="red", title="Choose color:")
+#color_picker = ColorPicker(color="red", title="Choose color:", description="Your choice of color.")
+
+#color_picker = ColorPicker(color="red", title="Choose color:", description=HTML("Your <b>choice</b> of color."))
+
+tooltip = Tooltip(content="Your <b>choice</b> of color.", position="right", attachment="right")
+color_picker = ColorPicker(color="red", title="Choose color:", description=tooltip)
 
 date_picker = DatePicker(value=date(2017, 8, 1))
 
@@ -144,7 +149,7 @@ widgets = Column(children=[
             Row(children=[switch_0, switch_1]),
             paragraph, div, pre_text,
         ]),
-        tabs,
+        #tabs,
     ]),
     table,
 ])

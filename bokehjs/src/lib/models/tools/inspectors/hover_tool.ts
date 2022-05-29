@@ -1,7 +1,7 @@
 import {InspectTool, InspectToolView} from "./inspect_tool"
 import {CustomJSHover} from "./customjs_hover"
 import {CallbackLike1} from "../../callbacks/callback"
-import {Tooltip, TooltipView} from "../../annotations/tooltip"
+import {Tooltip, TooltipView} from "../../ui/tooltip"
 import {Renderer} from "../../renderers/renderer"
 import {GlyphRenderer} from "../../renderers/glyph_renderer"
 import {GraphRenderer} from "../../renderers/graph_renderer"
@@ -85,7 +85,7 @@ export class HoverToolView extends InspectToolView {
 
     const {tooltips} = this.model
     if (tooltips instanceof Template) {
-      this._template_view = await build_view(tooltips, {parent: this})
+      this._template_view = await build_view(tooltips, {parent: this.plot_view})
       this._template_view.render()
     }
   }
@@ -113,7 +113,7 @@ export class HoverToolView extends InspectToolView {
     if (tooltips != null) {
       for (const r of this.computed_renderers) {
         const tooltip = new Tooltip({
-          custom: isString(tooltips) || isFunction(tooltips),
+          content: document.createElement("div"),
           attachment: this.model.attachment,
           show_arrow: this.model.show_arrow,
         })
@@ -129,6 +129,7 @@ export class HoverToolView extends InspectToolView {
 
     const views = await build_views(this._ttviews, [..._ttmodels.values()], {parent: this.plot_view})
     for (const ttview of views) {
+      this.plot_view.canvas_view.add_overlay(ttview.el)
       ttview.render()
     }
 
@@ -433,7 +434,7 @@ export class HoverToolView extends InspectToolView {
       tooltip.clear()
     else {
       const {content} = tooltip
-      empty(tooltip.content)
+      empty(content)
       for (const [,, node] of tooltips) {
         if (node != null)
           content.appendChild(node)

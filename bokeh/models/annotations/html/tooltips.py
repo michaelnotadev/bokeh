@@ -20,8 +20,18 @@ log = logging.getLogger(__name__)
 #-----------------------------------------------------------------------------
 
 # Bokeh imports
-from ....core.enums import TooltipAttachment
-from ....core.properties import Bool, Enum, Override
+from ....core.enums import Anchor, TooltipAttachment
+from ....core.properties import (
+    Bool,
+    Either,
+    Enum,
+    Float,
+    NonNullable as Required,
+    Nullable,
+    Override,
+    String,
+    Tuple,
+)
 from .html_annotation import HTMLAnnotation
 
 #-----------------------------------------------------------------------------
@@ -51,22 +61,29 @@ class Tooltip(HTMLAnnotation):
 
     level = Override(default="overlay")
 
+    position = Nullable(Either(Enum(Anchor), Tuple(Float, Float)), default=None, help="""
+    The position of the tooltip with respect to its parent. It can be
+    an absolute position within the parent or an anchor point for
+    symbolic positioning.
+    """)
+
+    content = Required(String, help="""
+    Rich HTML contents of this tooltip.
+    """)
+
     attachment = Enum(TooltipAttachment, help="""
     Whether the tooltip should be displayed to the left or right of the cursor
     position or above or below it, or if it should be automatically placed
     in the horizontal or vertical dimension.
     """)
 
-    inner_only = Bool(default=True, help="""
-    Whether to display outside a central plot frame area.
-
-    .. note:
-        This property is deprecated and will be removed in bokeh 3.0.
-
-    """)
-
     show_arrow = Bool(default=True, help="""
     Whether tooltip's arrow should be shown.
+    """)
+
+    closable = Bool(default=False, help="""
+    Allows to hide dismiss tooltip by clicking close (x) button. Useful when
+    using this model for persistent tooltips.
     """)
 
 #-----------------------------------------------------------------------------

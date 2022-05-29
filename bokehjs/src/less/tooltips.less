@@ -26,12 +26,6 @@
   .bring-to-front();
 }
 
-.bk-tooltip-contents > div:not(:first-child) {
-  // gives space when multiple elements are being hovered over
-  margin-top: 5px;
-  border-top: var(--tooltip-border) 1px dashed;
-}
-
 .tooltip-arrow-horizontal() {
   position: absolute;
   margin: calc(-1*var(--tooltip-arrow-half-height)) 0 0 0;
@@ -56,6 +50,12 @@
   border-color: transparent;
   content: " ";
   display: block;
+}
+
+.bk-tooltip-content > div:not(:first-child) {
+  // gives space when multiple elements are being hovered over
+  margin-top: 5px;
+  border-top: var(--tooltip-border) 1px dashed;
 }
 
 :host(.bk-left.bk-tooltip-arrow) .bk-tooltip-content::before {
